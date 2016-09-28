@@ -7,9 +7,6 @@ package org.nephtys.cmac
   */
 case class HmacValue[T](t : T, hmac : String) {
 
-  case class HmacValueStringed(t : String, hmac : String)
-
-
   import upickle.default._
   import HmacHelper._
 
@@ -25,13 +22,8 @@ case class HmacValue[T](t : T, hmac : String) {
 
   def jsonCompact()(implicit writer : upickle.default.Writer[T]
   ) : String = {
-    val inner : String = write(this)
-    //val inner : String = writer.write(this.t)
-    //write(HmacValueStringed(inner, hmac))
-    inner
+    write(this)
   }
-  def jsonPrettyPrint()(implicit writer : upickle.default.Writer[T]
-  ) : String = ???
 }
 
 
