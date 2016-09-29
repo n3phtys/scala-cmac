@@ -2,7 +2,8 @@ package org.nephtys.cmac
 
 import java.net.{URLDecoder, URLEncoder}
 import java.util.Base64
-import javax.crypto.Mac
+import javax.crypto.spec.SecretKeySpec
+import javax.crypto.{KeyGenerator, Mac, SecretKey}
 
 /**
   * Created by nephtys on 9/28/16.
@@ -41,4 +42,30 @@ object HmacHelper {
 
   def urlEncode(str : String) = URLEncoder.encode(str, "UTF-8")
   def urlUnencode(encodedStr : String) = URLDecoder.decode(encodedStr, "UTF-8")
+
+
+
+  object keys {
+    //helper methods for secretkey taken from http://stackoverflow.com/a/12039611/1907778
+
+    def readFromBase64String(base64str : String, algorithm : String = "AES") : SecretKey = {
+      // decode the base64 encoded string
+      val decodedKey = Base64.getDecoder.decode(base64str)
+      // rebuild key using SecretKeySpec
+      val originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, algorithm)
+      originalKey
+    }
+    def writeToBase64String(secretKey : SecretKey, algorithm : String = "AES") : String = {
+      // get base64 encoded version of the key
+      val encodedKey = Base64.getEncoder.encodeToString(secretKey.getEncoded)
+      encodedKey
+    }
+
+    def generateNewKey(bits : Int, algorithm : String = "AES") : SecretKey = {
+      val keyGen = KeyGenerator.getInstance(algorithm)
+      keyGen.init(bits)
+      val key = keyGen.generateKey()
+      key
+    }
+  }
 }
