@@ -1,6 +1,7 @@
 package org.nephtys.cmac
 
 import java.net.{URLDecoder, URLEncoder}
+import java.nio.charset.StandardCharsets
 import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
 import javax.crypto.{KeyGenerator, Mac, SecretKey}
@@ -40,8 +41,8 @@ object HmacHelper {
   }
 
 
-  def urlEncode(str : String) = URLEncoder.encode(str, "UTF-8")
-  def urlUnencode(encodedStr : String) = URLDecoder.decode(encodedStr, "UTF-8")
+  def urlEncode(str : String) = Base64.getUrlEncoder.encodeToString(str.getBytes(StandardCharsets.UTF_8))
+  def urlUnencode(encodedStr : String) = new String(Base64.getUrlDecoder.decode(encodedStr), StandardCharsets.UTF_8)
 
 
 
