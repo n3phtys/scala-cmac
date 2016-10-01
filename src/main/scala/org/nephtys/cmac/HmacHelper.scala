@@ -41,8 +41,10 @@ object HmacHelper {
   }
 
 
-  def urlEncode(str : String) = Base64.getUrlEncoder.encodeToString(str.getBytes(StandardCharsets.UTF_8))
-  def urlUnencode(encodedStr : String) = new String(Base64.getUrlDecoder.decode(encodedStr), StandardCharsets.UTF_8)
+  def urlEncode(str : String) = Base64.getUrlEncoder.encodeToString(str.getBytes(StandardCharsets.UTF_8)).replace('=', '.')
+  def urlUnencode(encodedStr : String) = new String(Base64.getUrlDecoder.decode(encodedStr.replace('.', '=')),
+  StandardCharsets
+    .UTF_8)
 
 
 
