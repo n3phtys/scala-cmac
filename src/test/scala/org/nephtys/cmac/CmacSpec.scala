@@ -15,7 +15,7 @@ class CmacSpec extends FlatSpec with Matchers {
   private val keyGen = KeyGenerator.getInstance("HmacMD5")
   private val generatedKey = keyGen.generateKey()
 
-  implicit val macSource = new MacSource(() => generatedKey)
+  implicit val macSource = new MacSource(generatedKey)
 
   case class TestClass(value : Int, name : String)
 
