@@ -14,7 +14,7 @@ class KeySpec extends FlatSpec with Matchers{
   "A Key" should "be created, written to a string and reread without problems" in {
     val generatedKey : SecretKey = HmacHelper.keys.generateNewKey(bits, algorithm)
 
-    val stringifiedKey : String = HmacHelper.keys.writeToBase64String(generatedKey, algorithm)
+    val stringifiedKey : String = HmacHelper.keys.writeToBase64String(generatedKey)
 
     val regeneratedKey : SecretKey = HmacHelper.keys.readFromBase64String(stringifiedKey, algorithm)
 

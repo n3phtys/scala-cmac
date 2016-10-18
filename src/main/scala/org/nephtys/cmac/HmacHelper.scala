@@ -57,14 +57,20 @@ object HmacHelper {
   object keys {
     //helper methods for secretkey taken from http://stackoverflow.com/a/12039611/1907778
 
-    def readFromBase64String(base64str : String, algorithm : String = "AES") : SecretKey = {
+    def readFromBase64String(base64str : String, algorithm : String) : SecretKey = {
       // decode the base64 encoded string
-      val decodedKey = DatatypeConverter.parseBase64Binary(base64str)
+      println(s"read from base64str : $base64str")
+
+      //the next is a hack to prevent LF from hanging around
+      def lastchar : Char = base64str.toCharArray.last
+      val decodedKey = DatatypeConverter.parseBase64Binary(if (lastchar == 10) base64str.take(base64str.size - 1) else base64str)
       // rebuild key using SecretKeySpec
       val originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, algorithm)
       originalKey
     }
-    def writeToBase64String(secretKey : SecretKey, algorithm : String = "AES") : String = {
+    def writeToBase64String(secretKey : SecretKey) : String = {
+
+      println(s"write to base64str: ${Base64.getEncoder.encodeToString(secretKey.getEncoded)}")
       // get base64 encoded version of the key
       val encodedKey = DatatypeConverter.printBase64Binary(secretKey.getEncoded)
       encodedKey
