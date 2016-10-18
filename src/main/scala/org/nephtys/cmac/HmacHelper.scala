@@ -70,7 +70,7 @@ object HmacHelper {
     }
     def writeToBase64String(secretKey : SecretKey) : String = {
 
-      println(s"write to base64str: ${Base64.getEncoder.encodeToString(secretKey.getEncoded)}")
+      println(s"write to base64str: ${DatatypeConverter.printBase64Binary(secretKey.getEncoded)}")
       // get base64 encoded version of the key
       val encodedKey = DatatypeConverter.printBase64Binary(secretKey.getEncoded)
       encodedKey
