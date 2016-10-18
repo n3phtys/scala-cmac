@@ -1,7 +1,8 @@
 package org.nephtys.cmac
 
 import java.nio.charset.StandardCharsets
-import java.util.Base64
+import javax.xml.bind.DatatypeConverter
+
 
 /**
   * always asssumes utf8 strings
@@ -32,9 +33,14 @@ object BasicAuthHelper {
       filter.lastOption.getOrElse("")
     }
 
-    def decodeB64(base64str : String) : String = {
-      val bytes =  Base64.getDecoder.decode(base64str)
-      val str = new String(bytes, StandardCharsets.UTF_8)
-      str
-    }
+  def decodeB64(base64str : String) : String = {
+    val bytes =  DatatypeConverter.parseBase64Binary(base64str)
+    val str = new String(bytes, "UTF-8")
+    str
+  }
+
+  def encodeB64(str : String) : String = {
+    val result =  DatatypeConverter.printBase64Binary(str.getBytes("UTF-8"))
+    result
+  }
 }

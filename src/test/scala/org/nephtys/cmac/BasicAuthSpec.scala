@@ -1,8 +1,5 @@
 package org.nephtys.cmac
 
-import java.nio.charset.StandardCharsets
-import java.util.Base64
-import javax.crypto.SecretKey
 
 import org.nephtys.cmac.BasicAuthHelper.LoginData
 import org.scalatest.{FlatSpec, Matchers}
@@ -35,12 +32,12 @@ class BasicAuthSpec  extends FlatSpec with Matchers{
   }
 
   "The B64 encoding" should "work as expected in simple cases" in {
-    val str = Base64.getEncoder.encodeToString("user:pass".getBytes(StandardCharsets.UTF_8))
+    val str = BasicAuthHelper.encodeB64("user:pass")
     str should be ("""dXNlcjpwYXNz""")
   }
 
   "The B64 encoding" should "work as expected in normal cases" in {
-    val str = Base64.getEncoder.encodeToString(combinedString.getBytes(StandardCharsets.UTF_8))
+    val str = BasicAuthHelper.encodeB64(combinedString)
     str should be (b64string)
   }
 

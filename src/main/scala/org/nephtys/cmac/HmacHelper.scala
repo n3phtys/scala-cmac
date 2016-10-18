@@ -2,9 +2,9 @@ package org.nephtys.cmac
 
 import java.net.{URLDecoder, URLEncoder}
 import java.nio.charset.StandardCharsets
-import java.util.Base64
 import javax.crypto.spec.SecretKeySpec
 import javax.crypto.{KeyGenerator, Mac, SecretKey}
+import javax.xml.bind.DatatypeConverter
 
 /**
   * Created by nephtys on 9/28/16.
@@ -37,30 +37,36 @@ object HmacHelper {
   }
   def computeHMAC[T](t : T)(implicit mac : Mac, writer : upickle.default.Writer[T]) : String = {
     val msg : String = write[T](t)
-    Base64.getEncoder.encodeToString(mac.doFinal(msg.getBytes("UTF-8")))
+    DatatypeConverter.printBase64Binary(mac.doFinal(msg.getBytes("UTF-8")))
   }
 
 
-  def urlEncode(str : String) = Base64.getUrlEncoder.encodeToString(str.getBytes(StandardCharsets.UTF_8)).replace('=', '.')
-  def urlUnencode(encodedStr : String) = new String(Base64.getUrlDecoder.decode(encodedStr.replace('.', '=')),
-  StandardCharsets
-    .UTF_8)
+  /**
+    * uses UTF-8 and - _ as additional symbols
+    * @param str
+    * @return
+    */
+  def urlB64encode(str : String) : String = DatatypeConverter.printBase64Binary(str.getBytes("UTF-8")).replace('+',
+    '-').replace('/', '_').replace('=', '.')
+  def urlB64decode(str : String) : String = new String(DatatypeConverter.parseBase64Binary(str.replace('-',
+    '+').replace('_', '/').replace('.', '=')), "UTF-8")
 
-
+  def urlEncode(str : String) = urlB64encode(str)
+  def urlUnencode(encodedStr : String) = urlB64decode(encodedStr)
 
   object keys {
     //helper methods for secretkey taken from http://stackoverflow.com/a/12039611/1907778
 
     def readFromBase64String(base64str : String, algorithm : String = "AES") : SecretKey = {
       // decode the base64 encoded string
-      val decodedKey = Base64.getDecoder.decode(base64str)
+      val decodedKey = DatatypeConverter.parseBase64Binary(base64str)
       // rebuild key using SecretKeySpec
       val originalKey = new SecretKeySpec(decodedKey, 0, decodedKey.length, algorithm)
       originalKey
     }
     def writeToBase64String(secretKey : SecretKey, algorithm : String = "AES") : String = {
       // get base64 encoded version of the key
-      val encodedKey = Base64.getEncoder.encodeToString(secretKey.getEncoded)
+      val encodedKey = DatatypeConverter.printBase64Binary(secretKey.getEncoded)
       encodedKey
     }
 
